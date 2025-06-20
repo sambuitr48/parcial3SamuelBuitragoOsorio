@@ -1,0 +1,51 @@
+name: CI - del peor parcial de mi vida
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: gestionInventario_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - name: JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: build y corre tests
+        run: mvn clean verify --no-transfer-progress
+
+      - name: publica reporte de pruebas
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: target/surefire-reports/
+
+      - name: analiza dependencias con owasp
+        run: mvn org.owasp:dependency-check-maven:8.4.0:check --no-transfer-progress
+
+      - name: publica reporte dependencias
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: target/dependency-check-report.*

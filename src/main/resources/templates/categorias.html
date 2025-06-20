@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Categorías</title>
+</head>
+<body>
+<h2>Categorías</h2>
+
+<table border="1">
+    <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+    </tr>
+    <tr th:each="c : ${categories}">
+        <td th:text="${c.name}"></td>
+        <td th:text="${c.description}"></td>
+    </tr>
+</table>
+
+<h3>Agregar Categoría</h3>
+<form method="post" action="/categories/form">
+    <input type="text" name="name" placeholder="Nombre" required>
+    <input type="text" name="description" placeholder="Descripción" required>
+    <button type="submit">Guardar</button>
+</form>
+</body>
+</html>
