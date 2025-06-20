@@ -6,7 +6,6 @@ import org.springframework.util.Assert;
 
 import java.io.File;
 
-@SpringBootTest
 public class SeguridadTests {
 
     @Test
